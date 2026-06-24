@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FileText, Wrench, MapPin, User } from 'lucide-react';
+import { FileText, Wrench, MapPin, User, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { getUnreadCount } from '../api';
@@ -8,6 +8,7 @@ const tabs = [
   { key: '/policies', label: '首页', icon: FileText },
   { key: '/claims', label: '理赔', icon: Wrench },
   { key: '/shops/nearby', label: '门店', icon: MapPin },
+  { key: '/agent', label: 'Agent', icon: Sparkles },
   { key: '/profile', label: '我的', icon: User },
 ];
 

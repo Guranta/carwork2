@@ -13,6 +13,7 @@ import Notifications from './pages/Notifications';
 import Payment from './pages/Payment';
 import Review from './pages/Review';
 import Profile from './pages/Profile';
+import Agent from './pages/Agent';
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const token = useAuthStore((s) => s.token);
@@ -35,6 +36,7 @@ export default function App() {
           <Route path="/claims/new/:id" element={<PrivateRoute><CreateClaim /></PrivateRoute>} />
           <Route path="/claims/:id" element={<PrivateRoute><ClaimDetail /></PrivateRoute>} />
           <Route path="/shops/nearby" element={<PrivateRoute><NearbyShops /></PrivateRoute>} />
+          <Route path="/agent" element={<PrivateRoute><Agent /></PrivateRoute>} />
           <Route path="/notifications" element={<PrivateRoute><Notifications /></PrivateRoute>} />
           <Route path="/claims/:id/payment" element={<PrivateRoute><Payment /></PrivateRoute>} />
           <Route path="/claims/:id/review" element={<PrivateRoute><Review /></PrivateRoute>} />
