@@ -9,6 +9,7 @@ import { ClaimsModule } from './modules/claims/claims.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { OcrModule } from './modules/ocr/ocr.module';
 import { DamageAiModule } from './modules/damage-ai/damage-ai.module';
+import { RepairShopsModule } from './modules/repair-shops/repair-shops.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { DamageAiModule } from './modules/damage-ai/damage-ai.module';
     UploadModule,
     OcrModule,
     DamageAiModule,
+    RepairShopsModule,
   ],
 })
 export class AppModule {}

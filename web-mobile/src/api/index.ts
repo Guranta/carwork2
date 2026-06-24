@@ -12,3 +12,8 @@ export const getClaims = (status?: string) => api.get('/claims', { params: { sta
 export const getClaimDetail = (id: number) => api.get(`/claims/${id}`);
 export const uploadClaimImages = (id: number, formData: FormData) =>
   api.post(`/claims/${id}/images`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+export const getNearbyShops = (lat: number, lng: number, sort?: string) =>
+  api.get('/repair-shops/nearby', { params: { lat, lng, sort } });
+export const getShopDetail = (id: number) => api.get(`/repair-shops/${id}`);
+export const getShopReviews = (id: number) => api.get(`/repair-shops/${id}/reviews`);
+export const createReview = (data: any) => api.post('/repair-shops/reviews', data);
