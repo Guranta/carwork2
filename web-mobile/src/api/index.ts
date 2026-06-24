@@ -17,3 +17,12 @@ export const getNearbyShops = (lat: number, lng: number, sort?: string) =>
 export const getShopDetail = (id: number) => api.get(`/repair-shops/${id}`);
 export const getShopReviews = (id: number) => api.get(`/repair-shops/${id}/reviews`);
 export const createReview = (data: any) => api.post('/repair-shops/reviews', data);
+export const getNotifications = (unreadOnly?: boolean) =>
+  api.get('/notifications', { params: unreadOnly ? { unreadOnly: 'true' } : {} });
+export const getUnreadCount = () => api.get('/notifications/unread-count');
+export const markNotificationRead = (id: number) => api.patch(`/notifications/${id}/read`);
+export const markAllNotificationsRead = () => api.patch('/notifications/read-all');
+export const createPayment = (claimId: number, amount: number, type: string) =>
+  api.post('/payments/create', { claimId, amount, type });
+export const mockPay = (orderId: number) => api.post(`/payments/${orderId}/pay`);
+export const getClaimPayments = (claimId: number) => api.get(`/payments/claim/${claimId}`);

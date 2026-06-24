@@ -11,6 +11,8 @@ import { OcrModule } from './modules/ocr/ocr.module';
 import { DamageAiModule } from './modules/damage-ai/damage-ai.module';
 import { RepairShopsModule } from './modules/repair-shops/repair-shops.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 
 @Module({
   imports: [
@@ -26,6 +28,8 @@ import { AdminModule } from './modules/admin/admin.module';
     DamageAiModule,
     RepairShopsModule,
     AdminModule,
+    NotificationsModule,
+    PaymentsModule,
   ],
 })
 export class AppModule {}
