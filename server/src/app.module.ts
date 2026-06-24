@@ -10,6 +10,7 @@ import { UploadModule } from './modules/upload/upload.module';
 import { OcrModule } from './modules/ocr/ocr.module';
 import { DamageAiModule } from './modules/damage-ai/damage-ai.module';
 import { RepairShopsModule } from './modules/repair-shops/repair-shops.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { RepairShopsModule } from './modules/repair-shops/repair-shops.module';
     OcrModule,
     DamageAiModule,
     RepairShopsModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
