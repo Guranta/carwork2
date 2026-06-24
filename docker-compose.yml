@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+  api:
+    build: ./server
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./server/uploads:/app/uploads
+    environment:
+      - DATABASE_URL=file:./dev.db
+      - JWT_SECRET=change-me-in-production
+    # TODO: add healthcheck
+
+  web-mobile:
+    build: ./web-mobile
+    # 静态资源由 nginx 分发，此服务仅用于构建
+
+  web-admin:
+    build: ./web-admin
+    # 静态资源由 nginx 分发，此服务仅用于构建
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./server/uploads:/var/www/uploads
+    depends_on:
+      - api
+      # - web-mobile
+      # - web-admin
