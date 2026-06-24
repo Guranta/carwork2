@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../stores/auth';
 import { getPolicies } from '../api';
+import TabBar from '../components/TabBar';
 
 interface Policy {
   id: number;
@@ -35,7 +36,7 @@ export default function Policies() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black pb-20">
       <header className="px-6 pt-12 pb-6 border-b-2 border-neutral-800">
         <div className="flex justify-between items-center">
           <div>
@@ -86,6 +87,8 @@ export default function Policies() {
           </div>
         )}
       </div>
+
+      <TabBar />
     </div>
   );
 }

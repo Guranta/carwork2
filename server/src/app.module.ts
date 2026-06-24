@@ -5,8 +5,23 @@ import { SmsModule } from './modules/sms/sms.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { PoliciesModule } from './modules/policies/policies.module';
+import { ClaimsModule } from './modules/claims/claims.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { OcrModule } from './modules/ocr/ocr.module';
+import { DamageAiModule } from './modules/damage-ai/damage-ai.module';
 
 @Module({
-  imports: [PrismaModule, HealthModule, SmsModule, AuthModule, UsersModule, PoliciesModule],
+  imports: [
+    PrismaModule,
+    HealthModule,
+    SmsModule,
+    AuthModule,
+    UsersModule,
+    PoliciesModule,
+    ClaimsModule,
+    UploadModule,
+    OcrModule,
+    DamageAiModule,
+  ],
 })
 export class AppModule {}
