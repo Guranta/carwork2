@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
   api:
     build: ./server
@@ -7,18 +5,29 @@ services:
       - "3000:3000"
     volumes:
       - ./server/uploads:/app/uploads
+      - db-data:/app/prisma
     environment:
       - DATABASE_URL=file:./dev.db
       - JWT_SECRET=change-me-in-production
-    # TODO: add healthcheck
+      - PORT=3000
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   web-mobile:
     build: ./web-mobile
-    # 静态资源由 nginx 分发，此服务仅用于构建
+    restart: unless-stopped
+    depends_on:
+      - api
 
   web-admin:
     build: ./web-admin
-    # 静态资源由 nginx 分发，此服务仅用于构建
+    restart: unless-stopped
+    depends_on:
+      - api
 
   nginx:
     image: nginx:alpine
@@ -29,5 +38,9 @@ services:
       - ./server/uploads:/var/www/uploads
     depends_on:
       - api
-      # - web-mobile
-      # - web-admin
+      - web-mobile
+      - web-admin
+    restart: unless-stopped
+
+volumes:
+  db-data:
