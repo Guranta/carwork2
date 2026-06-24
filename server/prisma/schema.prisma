@@ -1,0 +1,217 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum UserRole {
+  OWNER
+}
+
+enum AdminRole {
+  ADJUSTER
+  ADMIN
+}
+
+enum PolicyStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum ClaimStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  ASSESSED
+  REPAIRING
+  AWAITING_PAYMENT
+  CLOSED
+  REJECTED
+}
+
+enum PaymentType {
+  ADVANCE
+  SELF
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  phone     String   @unique
+  name      String
+  avatar    String?
+  role      UserRole @default(OWNER)
+  createdAt DateTime @default(now())
+
+  vehicles    Vehicle[]
+  policies    Policy[]
+  claims      Claim[]
+  notifications Notification[]
+  reviews     Review[]
+
+  @@map("users")
+}
+
+model Vehicle {
+  id      Int    @id @default(autoincrement())
+  ownerId Int
+  plateNo String
+  brand   String
+  model   String
+  vin     String?
+
+  owner  User     @relation(fields: [ownerId], references: [id])
+  policies Policy[]
+
+  @@map("vehicles")
+}
+
+model Policy {
+  id             Int          @id @default(autoincrement())
+  policyNo       String       @unique
+  ownerId        Int
+  vehicleId      Int
+  type           String
+  startDate      DateTime
+  endDate        DateTime
+  coverageAmount Float
+  status         PolicyStatus @default(ACTIVE)
+
+  owner   User    @relation(fields: [ownerId], references: [id])
+  vehicle Vehicle @relation(fields: [vehicleId], references: [id])
+  claims  Claim[]
+
+  @@map("policies")
+}
+
+model Claim {
+  id              Int         @id @default(autoincrement())
+  claimNo         String      @unique
+  policyId        Int
+  ownerId         Int
+  shopId          Int?
+  status          ClaimStatus @default(DRAFT)
+  incidentTime    DateTime?
+  incidentLat     Float?
+  incidentLng     Float?
+  description     String?
+  assessmentAmount Float?
+  finalAmount     Float?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  owner      User          @relation(fields: [ownerId], references: [id])
+  policy     Policy        @relation(fields: [policyId], references: [id])
+  shop       RepairShop?   @relation(fields: [shopId], references: [id])
+  images     ClaimImage[]
+  damageReport DamageReport?
+  payments   Payment[]
+  reviews    Review[]
+
+  @@map("claims")
+}
+
+model ClaimImage {
+  id       Int    @id @default(autoincrement())
+  claimId  Int
+  url      String
+  type     String  @default("damage")
+  exifTime DateTime?
+  exifLat  Float?
+  exifLng  Float?
+
+  claim Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("claim_images")
+}
+
+model DamageReport {
+  id             Int    @id @default(autoincrement())
+  claimId        Int    @unique
+  parts          String
+  totalEstimate  Float
+  aiRawResponse  String?
+
+  claim Claim @relation(fields: [claimId], references: [id], onDelete: Cascade)
+
+  @@map("damage_reports")
+}
+
+model RepairShop {
+  id            Int    @id @default(autoincrement())
+  name          String
+  logo          String?
+  lat           Float
+  lng           Float
+  certification String
+  rating        Float  @default(0)
+  reviewCount   Int    @default(0)
+  basePrice     Float
+
+  claims  Claim[]
+  reviews Review[]
+
+  @@map("repair_shops")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String
+  title     String
+  body      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model Payment {
+  id          Int           @id @default(autoincrement())
+  claimId     Int
+  mockOrderNo String
+  amount      Float
+  type        PaymentType
+  status      PaymentStatus @default(PENDING)
+  paidAt      DateTime?
+
+  claim Claim @relation(fields: [claimId], references: [id])
+
+  @@map("payments")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  claimId   Int
+  shopId    Int
+  ownerId   Int
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  claim Claim      @relation(fields: [claimId], references: [id])
+  shop  RepairShop @relation(fields: [shopId], references: [id])
+  owner User       @relation(fields: [ownerId], references: [id])
+
+  @@map("reviews")
+}
+
+model Admin {
+  id           Int       @id @default(autoincrement())
+  username     String    @unique
+  passwordHash String
+  name         String
+  role         AdminRole @default(ADJUSTER)
+
+  @@map("admins")
+}
