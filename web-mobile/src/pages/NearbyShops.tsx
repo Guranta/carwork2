@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { MapPin, Star, ChevronRight, Navigation } from 'lucide-react';
 import { getNearbyShops } from '../api';
+import { ListSkeleton, EmptyState } from '../components/ui';
+import TabBar from '../components/TabBar';
 
 interface Shop {
   id: number;
@@ -18,6 +22,12 @@ const SORT_OPTIONS = [
   { key: 'price', label: '价格最低' },
 ];
 
+const CERT_COLORS: Record<string, string> = {
+  '4S店': 'bg-[#FFF1F0] text-[#FF4D4F]',
+  '认证维修': 'bg-[#E6F9F1] text-[#00B96B]',
+  '快修连锁': 'bg-[#E6F4FF] text-[#1677FF]',
+};
+
 export default function NearbyShops() {
   const [shops, setShops] = useState<Shop[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,51 +42,75 @@ export default function NearbyShops() {
   }, [sort]);
 
   return (
-    <div className="min-h-screen bg-black">
-      <header className="px-6 py-4 border-b-2 border-neutral-800 flex items-center gap-4">
-        <h1 className="text-white font-bold">附近修理厂</h1>
-      </header>
-
-      <div className="px-6 py-3 flex gap-2 border-b border-neutral-800">
-        {SORT_OPTIONS.map((opt) => (
-          <button
-            key={opt.key}
-            className={`px-3 py-1 text-xs font-bold ${sort === opt.key ? 'bg-white text-black' : 'border border-neutral-700 text-neutral-400'}`}
-            onClick={() => setSort(opt.key)}
-          >
-            {opt.label}
-          </button>
-        ))}
+    <div className="min-h-screen bg-[#F5F7FA] pb-20">
+      {/* Location bar */}
+      <div className="bg-white px-5 pt-12 pb-3 sticky top-0 z-40 border-b border-[#F0F0F0]">
+        <div className="flex items-center gap-1.5 mb-3">
+          <Navigation size={14} className="text-[#00B96B]" />
+          <span className="text-[#8C8C8C] text-xs">当前位置：北京市海淀区中关村</span>
+        </div>
+        <div className="flex gap-2">
+          {SORT_OPTIONS.map((opt) => (
+            <button
+              key={opt.key}
+              className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                sort === opt.key ? 'bg-[#00B96B] text-white' : 'bg-[#F5F5F5] text-[#8C8C8C]'
+              }`}
+              onClick={() => setSort(opt.key)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="px-6 py-4">
+      <div className="px-4 pt-4">
         {loading ? (
-          <p className="text-neutral-600 text-sm">定位中...</p>
+          <ListSkeleton count={4} />
         ) : shops.length === 0 ? (
-          <p className="text-neutral-600 text-sm">附近暂无修理厂</p>
+          <EmptyState icon={<MapPin size={56} strokeWidth={1.5} />} title="附近暂无修理厂" />
         ) : (
           <div className="space-y-3">
-            {shops.map((shop) => (
-              <div key={shop.id} className="border-2 border-neutral-800 p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <div>
-                    <p className="text-white font-bold">{shop.name}</p>
-                    <span className="text-neutral-600 text-xs">{shop.certification}</span>
+            {shops.map((shop, idx) => (
+              <motion.button
+                key={shop.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: idx * 0.05 }}
+                className="w-full text-left bg-white rounded-xl shadow-[0_1px_4px_rgba(0,0,0,0.06)] p-4 active:scale-[0.98] transition-transform"
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[#1A1A1A] font-semibold text-base truncate">{shop.name}</p>
+                    <span className={`inline-block mt-1 px-2 py-0.5 rounded text-xs font-medium ${CERT_COLORS[shop.certification] || 'bg-[#F5F5F5] text-[#8C8C8C]'}`}>
+                      {shop.certification}
+                    </span>
                   </div>
-                  <span className="text-white text-sm font-bold">{shop.distanceText}</span>
+                  <span className="bg-[#F5F5F5] text-[#595959] px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap">
+                    {shop.distanceText}
+                  </span>
                 </div>
-                <div className="flex justify-between items-center pt-3 border-t border-neutral-800">
+                <div className="flex items-center justify-between pt-3 border-t border-[#F0F0F0]">
                   <div className="flex items-center gap-3">
-                    <span className="text-white text-sm">⭐ {shop.rating}</span>
-                    <span className="text-neutral-600 text-xs">{shop.reviewCount}评价</span>
+                    <div className="flex items-center gap-1">
+                      <Star size={13} className="text-[#FAAD14] fill-[#FAAD14]" />
+                      <span className="text-[#1A1A1A] text-sm font-medium">{shop.rating}</span>
+                    </div>
+                    <span className="text-[#BFBFBF] text-xs">{shop.reviewCount} 条评价</span>
                   </div>
-                  <span className="text-white font-bold">¥{shop.basePrice}起</span>
+                  <div className="flex items-center gap-1">
+                    <span className="text-[#8C8C8C] text-xs">起</span>
+                    <span className="text-[#FF4D4F] font-bold">¥{shop.basePrice}</span>
+                    <ChevronRight size={14} className="text-[#BFBFBF]" />
+                  </div>
                 </div>
-              </div>
+              </motion.button>
             ))}
           </div>
         )}
       </div>
+
+      <TabBar />
     </div>
   );
 }
