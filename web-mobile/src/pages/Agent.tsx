@@ -110,7 +110,7 @@ export default function Agent() {
       const ctrl = new AbortController();
       abortRef.current = ctrl;
       try {
-        const data = await agentChat(history, imgs, 'customer', ctrl.signal);
+        const data = await agentChat(history, imgs, 'customer');
         setMessages((prev) =>
           prev.map((m) =>
             m.id === pendingId

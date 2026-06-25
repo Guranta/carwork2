@@ -83,6 +83,9 @@ model Policy {
   startDate      DateTime
   endDate        DateTime
   coverageAmount Float
+  deductible     Float        @default(0)
+  payoutRatio    Float        @default(1)
+  coverageTypes  String       @default("[]")
   status         PolicyStatus @default(ACTIVE)
 
   owner   User    @relation(fields: [ownerId], references: [id])

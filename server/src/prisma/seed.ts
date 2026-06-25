@@ -45,19 +45,19 @@ async function main() {
 
   const policies = await Promise.all([
     prisma.policy.create({
-      data: { policyNo: 'POL20240001', ownerId: users[0].id, vehicleId: vehicles[0].id, type: '交强险+商业险', startDate: new Date('2024-01-01'), endDate: new Date('2025-01-01'), coverageAmount: 200000, status: 'ACTIVE' },
+      data: { policyNo: 'POL20240001', ownerId: users[0].id, vehicleId: vehicles[0].id, type: '交强险+商业险', startDate: new Date('2024-01-01'), endDate: new Date('2025-01-01'), coverageAmount: 200000, deductible: 0, payoutRatio: 1.0, coverageTypes: '["交强险","车辆损失险","第三者责任险","不计免赔"]', status: 'ACTIVE' },
     }),
     prisma.policy.create({
-      data: { policyNo: 'POL20240002', ownerId: users[0].id, vehicleId: vehicles[1].id, type: '商业险', startDate: new Date('2024-03-15'), endDate: new Date('2025-03-15'), coverageAmount: 150000, status: 'ACTIVE' },
+      data: { policyNo: 'POL20240002', ownerId: users[0].id, vehicleId: vehicles[1].id, type: '商业险', startDate: new Date('2024-03-15'), endDate: new Date('2025-03-15'), coverageAmount: 150000, deductible: 500, payoutRatio: 0.85, coverageTypes: '["车辆损失险","不计免赔"]', status: 'ACTIVE' },
     }),
     prisma.policy.create({
-      data: { policyNo: 'POL20240003', ownerId: users[1].id, vehicleId: vehicles[2].id, type: '交强险+商业险', startDate: new Date('2024-06-01'), endDate: new Date('2025-06-01'), coverageAmount: 180000, status: 'ACTIVE' },
+      data: { policyNo: 'POL20240003', ownerId: users[1].id, vehicleId: vehicles[2].id, type: '交强险+商业险', startDate: new Date('2024-06-01'), endDate: new Date('2025-06-01'), coverageAmount: 180000, deductible: 0, payoutRatio: 0.9, coverageTypes: '["交强险","车辆损失险","不计免赔"]', status: 'ACTIVE' },
     }),
     prisma.policy.create({
-      data: { policyNo: 'POL20230004', ownerId: users[1].id, vehicleId: vehicles[2].id, type: '交强险', startDate: new Date('2023-01-01'), endDate: new Date('2024-01-01'), coverageAmount: 122000, status: 'EXPIRED' },
+      data: { policyNo: 'POL20230004', ownerId: users[1].id, vehicleId: vehicles[2].id, type: '交强险', startDate: new Date('2023-01-01'), endDate: new Date('2024-01-01'), coverageAmount: 122000, deductible: 0, payoutRatio: 1.0, coverageTypes: '["交强险"]', status: 'EXPIRED' },
     }),
     prisma.policy.create({
-      data: { policyNo: 'POL20240005', ownerId: users[0].id, vehicleId: vehicles[0].id, type: '第三者责任险', startDate: new Date('2024-05-01'), endDate: new Date('2025-05-01'), coverageAmount: 500000, status: 'ACTIVE' },
+      data: { policyNo: 'POL20240005', ownerId: users[0].id, vehicleId: vehicles[0].id, type: '第三者责任险', startDate: new Date('2024-05-01'), endDate: new Date('2025-05-01'), coverageAmount: 500000, deductible: 0, payoutRatio: 1.0, coverageTypes: '["第三者责任险","不计免赔"]', status: 'ACTIVE' },
     }),
   ])
 
