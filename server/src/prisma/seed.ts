@@ -74,6 +74,69 @@ async function main() {
     prisma.repairShop.create({ data: { name: '养车无忧（回龙观店）', lat: 40.0750, lng: 116.3420, certification: '认证维修', rating: 4.5, reviewCount: 156, basePrice: 700 } }),
   ])
 
+  // 演示理赔单（给 13800000001，覆盖多种状态）
+  const claims = await Promise.all([
+    prisma.claim.create({
+      data: {
+        claimNo: 'CL20240620001',
+        policyId: policies[0].id,
+        ownerId: users[0].id,
+        status: 'UNDER_REVIEW',
+        incidentTime: new Date('2024-06-18'),
+        incidentLat: 39.9847,
+        incidentLng: 116.3186,
+        description: '三车追尾，前保险杠 + 左前大灯受损',
+      },
+    }),
+    prisma.claim.create({
+      data: {
+        claimNo: 'CL20240515002',
+        policyId: policies[0].id,
+        ownerId: users[0].id,
+        shopId: shops[0].id,
+        status: 'REPAIRING',
+        incidentTime: new Date('2024-05-13'),
+        description: '左前门凹陷，需钣金喷漆',
+        assessmentAmount: 3500,
+      },
+    }),
+    prisma.claim.create({
+      data: {
+        claimNo: 'CL20240401003',
+        policyId: policies[1].id,
+        ownerId: users[0].id,
+        shopId: shops[1].id,
+        status: 'CLOSED',
+        incidentTime: new Date('2024-03-28'),
+        description: '后保险杠刮蹭，喷漆处理',
+        assessmentAmount: 4200,
+        finalAmount: 4200,
+      },
+    }),
+  ])
+
+  // 演示通知（给 13800000001）
+  await Promise.all([
+    prisma.notification.create({
+      data: {
+        userId: users[0].id,
+        type: 'CLAIM_STATUS',
+        title: '理赔进度更新',
+        body: '您的理赔单 CL20240620001 已受理，正在定损审核中。',
+        isRead: false,
+      },
+    }),
+    prisma.notification.create({
+      data: {
+        userId: users[0].id,
+        type: 'SYSTEM',
+        title: '欢迎使用车险理赔助手',
+        body: '点击底部 Agent，可随时向我咨询理赔、保单、修理厂等问题。',
+        isRead: false,
+      },
+    }),
+  ])
+
   const admins = await Promise.all([
     prisma.admin.create({
       data: { username: 'adjuster', passwordHash: await bcrypt.hash('adjuster123', 10), name: '理赔员小刘', role: 'ADJUSTER' },
@@ -91,6 +154,7 @@ async function main() {
   console.log(`  Vehicles: ${vehicles.length}`)
   console.log(`  Policies: ${policies.length}`)
   console.log(`  RepairShops: ${shops.length}`)
+  console.log(`  Claims: ${claims.length}`)
   console.log(`  Admins: ${admins.length}`)
 }
 

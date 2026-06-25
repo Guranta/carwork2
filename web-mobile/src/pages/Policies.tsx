@@ -88,7 +88,7 @@ export default function Policies() {
       </div>
 
       {/* Policy list */}
-      <div className="px-4 -mt-4">
+      <div className="px-4 mt-5">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-[#1A1A1A] text-lg font-bold">我的保单</h2>
           {policies.length > 0 && (
